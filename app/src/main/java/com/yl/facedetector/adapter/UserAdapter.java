@@ -1,4 +1,4 @@
-package com.yl.facedetector;
+package com.yl.facedetector.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.yl.facedetector.R;
+import com.yl.facedetector.db.UserInfo;
 
 import java.util.List;
 
@@ -30,7 +33,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         TextView userSex;
         TextView userAge;
 
-        public ViewHolder(View itemView) {
+        private ViewHolder(View itemView) {
             super(itemView);
             linearLayout = (LinearLayout) itemView;
             userFace = (ImageView) itemView.findViewById(R.id.user_face);

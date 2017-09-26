@@ -1,7 +1,9 @@
-package com.yl.facedetector;
+package com.yl.facedetector.util;
 
 import android.graphics.Bitmap;
 import android.util.Log;
+
+import com.yl.facedetector.db.UserInfo;
 
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;

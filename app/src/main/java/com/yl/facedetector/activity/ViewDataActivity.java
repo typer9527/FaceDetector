@@ -1,10 +1,15 @@
-package com.yl.facedetector;
+package com.yl.facedetector.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
+import com.yl.facedetector.db.DatabaseHelper;
+import com.yl.facedetector.R;
+import com.yl.facedetector.adapter.UserAdapter;
+import com.yl.facedetector.db.UserInfo;
 
 import java.util.List;
 

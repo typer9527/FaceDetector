@@ -1,4 +1,4 @@
-package com.yl.facedetector;
+package com.yl.facedetector.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
-    public static final String CREATE_FACE_TABLE = "create table face_data (" +
+    private static final String CREATE_FACE_TABLE = "create table face_data (" +
             "id integer primary key autoincrement, " +
             "name text, " +
             "sex text, " +

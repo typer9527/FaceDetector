@@ -1,4 +1,4 @@
-package com.yl.facedetector;
+package com.yl.facedetector.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
+
+import com.yl.facedetector.R;
+import com.yl.facedetector.db.DatabaseHelper;
+import com.yl.facedetector.db.UserInfo;
+import com.yl.facedetector.util.FaceMatcher;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
@@ -56,11 +61,10 @@ public class DetectActivity extends AppCompatActivity implements
                         if (result == matcher.UNFINISHED) {
                             mDetectedFace = null;
                         } else if (result == matcher.NO_MATCHER) {
-//                            intent = new Intent(DetectActivity.this,
-//                                    RegisterActivity.class);
-//                            intent.putExtra("Face", mDetectedFace);
-//                            startActivity(intent);
-                            ToastUtil.showToast(DetectActivity.this, "未注册", 0);
+                            intent = new Intent(DetectActivity.this,
+                                    RegisterActivity.class);
+                            intent.putExtra("Face", mDetectedFace);
+                            startActivity(intent);
                             finish();
                         } else {
                             intent = new Intent();

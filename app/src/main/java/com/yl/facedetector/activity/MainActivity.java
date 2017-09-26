@@ -1,4 +1,4 @@
-package com.yl.facedetector;
+package com.yl.facedetector.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -9,6 +9,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+
+import com.yl.facedetector.db.DatabaseHelper;
+import com.yl.facedetector.util.PermissionHelper;
+import com.yl.facedetector.R;
+import com.yl.facedetector.util.ToastUtil;
+import com.yl.facedetector.db.UserInfo;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 

@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,9 +19,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetectActivity"
+            android:name=".activity.DetectActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".ViewDataActivity"></activity>
+        <activity android:name=".activity.ViewDataActivity" />
+        <activity android:name=".activity.RegisterActivity" />
     </application>
 
 </manifest>

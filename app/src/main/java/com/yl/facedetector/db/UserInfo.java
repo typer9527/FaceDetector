@@ -1,4 +1,4 @@
-package com.yl.facedetector;
+package com.yl.facedetector.db;
 
 /**
  * 用户信息类
