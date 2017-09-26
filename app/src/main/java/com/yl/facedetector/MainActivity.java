@@ -24,17 +24,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initDatabase();
     }
 
-    // 初始化数据库, FaceRecognizer匹配人脸要求训练数大于2
+    // 初始化数据库
     private void initDatabase() {
         DatabaseHelper helper = new DatabaseHelper(this);
         if (helper.query().size() == 0) {
-
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                     R.drawable.user_defaut);
             String path = helper.saveBitmapToLocal(bitmap);
             UserInfo user = new UserInfo("默认用户", "男", 25, path);
             helper.insert(user);
-
         }
         helper.close();
     }
@@ -46,8 +44,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 requestCameraPermission(new PermissionHelper.RequestListener() {
                     @Override
                     public void onGranted() {
-                        startActivity(new Intent(MainActivity.this,
-                                DetectActivity.class));
+                        Intent intent = new Intent(MainActivity.this,
+                                DetectActivity.class);
+                        intent.putExtra("flag", DetectActivity.FLAG_REGISTER);
+                        startActivityForResult(intent,
+                                DetectActivity.FLAG_REGISTER);
                     }
 
                     @Override
@@ -70,6 +71,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .requestCode(1)
                 .setListener(listener)
                 .request();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case DetectActivity.FLAG_REGISTER:
+                if (resultCode == RESULT_OK)
+                    ToastUtil.showToast(this, "已注册过", 1);
+                break;
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.yl.facedetector;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -32,6 +33,8 @@ import java.util.List;
 public class DetectActivity extends AppCompatActivity implements
         CvCameraViewListener2 {
     private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
+    public final static int FLAG_REGISTER = 1;
+    public final static int FLAG_VERIFY = 2;
     private Mat mRgba;
     private Mat mGray;
     private CascadeClassifier mJavaDetector;
@@ -40,13 +43,30 @@ public class DetectActivity extends AppCompatActivity implements
     private CameraBridgeViewBase mOpenCvCameraView;
     List<UserInfo> userList;
     private Bitmap mDetectedFace;
+    private FaceMatcher matcher;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            Intent intent;
             switch (msg.what) {
-                case 1:
+                case FLAG_REGISTER:
                     if (mDetectedFace == null) {
                         mDetectedFace = (Bitmap) msg.obj;
+                        int result = matcher.histogramMatch(mDetectedFace);
+                        if (result == matcher.UNFINISHED) {
+                            mDetectedFace = null;
+                        } else if (result == matcher.NO_MATCHER) {
+//                            intent = new Intent(DetectActivity.this,
+//                                    RegisterActivity.class);
+//                            intent.putExtra("Face", mDetectedFace);
+//                            startActivity(intent);
+                            ToastUtil.showToast(DetectActivity.this, "未注册", 0);
+                            finish();
+                        } else {
+                            intent = new Intent();
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
                     }
                     break;
                 default:
@@ -75,6 +95,7 @@ public class DetectActivity extends AppCompatActivity implements
         init();
         DatabaseHelper helper = new DatabaseHelper(DetectActivity.this);
         userList = helper.query();
+        matcher = new FaceMatcher(userList);
         helper.close();
     }
 
@@ -165,7 +186,7 @@ public class DetectActivity extends AppCompatActivity implements
                         FACE_RECT_COLOR, 3);
                 // 获取并利用message传递当前检测的人脸
                 Mat faceMat = new Mat(mRgba, facesArray[i]);
-                Imgproc.resize(faceMat, faceMat, new Size(840, 840));
+                Imgproc.resize(faceMat, faceMat, new Size(320, 320));
                 Bitmap bitmap = Bitmap.createBitmap(faceMat.width(),
                         faceMat.height(), Bitmap.Config.ARGB_8888);
                 Utils.matToBitmap(faceMat, bitmap);
