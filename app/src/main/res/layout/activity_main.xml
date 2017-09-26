@@ -8,11 +8,17 @@
         android:id="@+id/register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="识别注册" />
+        android:text="@string/register" />
+
+    <Button
+        android:id="@+id/verify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/verify" />
 
     <Button
         android:id="@+id/view_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="查看数据" />
+        android:text="@string/view_data" />
 </LinearLayout>

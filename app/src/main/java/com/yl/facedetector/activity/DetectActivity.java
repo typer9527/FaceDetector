@@ -73,6 +73,24 @@ public class DetectActivity extends AppCompatActivity implements
                         }
                     }
                     break;
+                case FLAG_VERIFY:
+                    if (mDetectedFace == null) {
+                        mDetectedFace = (Bitmap) msg.obj;
+                        int result = matcher.histogramMatch(mDetectedFace);
+                        if (result == matcher.UNFINISHED) {
+                            mDetectedFace = null;
+                        } else if (result == matcher.NO_MATCHER) {
+                            intent = new Intent();
+                            setResult(RESULT_CANCELED, intent);
+                            finish();
+                        } else {
+                            intent = new Intent();
+                            intent.putExtra("USER_ID", result);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    }
+                    break;
                 default:
                     break;
             }
@@ -195,7 +213,7 @@ public class DetectActivity extends AppCompatActivity implements
                         faceMat.height(), Bitmap.Config.ARGB_8888);
                 Utils.matToBitmap(faceMat, bitmap);
                 Message message = Message.obtain();
-                message.what = 1;
+                message.what = getIntent().getIntExtra("flag", 0);
                 message.obj = bitmap;
                 mHandler.sendMessage(message);
             }

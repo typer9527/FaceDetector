@@ -4,11 +4,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
-import com.yl.facedetector.db.DatabaseHelper;
 import com.yl.facedetector.R;
 import com.yl.facedetector.adapter.UserAdapter;
+import com.yl.facedetector.db.DatabaseHelper;
 import com.yl.facedetector.db.UserInfo;
 
 import java.util.List;
@@ -25,7 +24,6 @@ public class ViewDataActivity extends AppCompatActivity {
 
         DatabaseHelper helper = new DatabaseHelper(this);
         List<UserInfo> users = helper.query();
-        Log.e("size", "onCreate: " + users.size());
         helper.close();
         recyclerView.setAdapter(new UserAdapter(users));
     }
