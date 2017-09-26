@@ -21,5 +21,7 @@
         <activity
             android:name=".DetectActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".ViewDataActivity"></activity>
     </application>
+
 </manifest>
