@@ -2,13 +2,17 @@ package com.yl.facedetector;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
+import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
@@ -23,18 +27,33 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class DetectActivity extends AppCompatActivity implements
         CvCameraViewListener2 {
-
     private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
     private Mat mRgba;
     private Mat mGray;
-    private File mCascadeFile;
     private CascadeClassifier mJavaDetector;
     private float mRelativeFaceSize = 0.2f;
     private int mAbsoluteFaceSize = 0;
     private CameraBridgeViewBase mOpenCvCameraView;
+    List<UserInfo> userList;
+    private Bitmap mDetectedFace;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    if (mDetectedFace == null) {
+                        mDetectedFace = (Bitmap) msg.obj;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     static {
         System.loadLibrary("opencv_java3");
@@ -54,6 +73,9 @@ public class DetectActivity extends AppCompatActivity implements
         mOpenCvCameraView.setCvCameraViewListener(this);
 
         init();
+        DatabaseHelper helper = new DatabaseHelper(DetectActivity.this);
+        userList = helper.query();
+        helper.close();
     }
 
     // 配置摄像机，全屏、横屏和常亮
@@ -69,8 +91,8 @@ public class DetectActivity extends AppCompatActivity implements
             InputStream is = getResources()
                     .openRawResource(R.raw.lbpcascade_frontalface);
             File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
-            mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
-            FileOutputStream os = new FileOutputStream(mCascadeFile);
+            File cascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
+            FileOutputStream os = new FileOutputStream(cascadeFile);
             byte[] buffer = new byte[4096];
             int bytesRead;
             while ((bytesRead = is.read(buffer)) != -1) {
@@ -78,7 +100,7 @@ public class DetectActivity extends AppCompatActivity implements
             }
             is.close();
             os.close();
-            mJavaDetector = new CascadeClassifier(mCascadeFile.getAbsolutePath());
+            mJavaDetector = new CascadeClassifier(cascadeFile.getAbsolutePath());
             if (mJavaDetector.empty()) {
                 mJavaDetector = null;
             }
@@ -87,11 +109,6 @@ public class DetectActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
         mOpenCvCameraView.enableView();
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
     }
 
     @Override
@@ -146,6 +163,16 @@ public class DetectActivity extends AppCompatActivity implements
             if (facesArray[i].height > 400 && facesArray[i].height < 500) {
                 Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(),
                         FACE_RECT_COLOR, 3);
+                // 获取并利用message传递当前检测的人脸
+                Mat faceMat = new Mat(mRgba, facesArray[i]);
+                Imgproc.resize(faceMat, faceMat, new Size(840, 840));
+                Bitmap bitmap = Bitmap.createBitmap(faceMat.width(),
+                        faceMat.height(), Bitmap.Config.ARGB_8888);
+                Utils.matToBitmap(faceMat, bitmap);
+                Message message = Message.obtain();
+                message.what = 1;
+                message.obj = bitmap;
+                mHandler.sendMessage(message);
             }
         }
         return mRgba;

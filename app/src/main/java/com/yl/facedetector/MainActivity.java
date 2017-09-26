@@ -28,14 +28,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initDatabase() {
         DatabaseHelper helper = new DatabaseHelper(this);
         if (helper.query().size() == 0) {
-            int[] defaultUsers = {R.drawable.user1, R.drawable.user2};
-            for (int i = 0; i < defaultUsers.length; i++) {
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-                        defaultUsers[i]);
-                String path = helper.saveBitmapToLocal(bitmap);
-                UserInfo user = new UserInfo("默认用户" + (i + 1), "男", 25, path);
-                helper.insert(user);
-            }
+
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.user_defaut);
+            String path = helper.saveBitmapToLocal(bitmap);
+            UserInfo user = new UserInfo("默认用户", "男", 25, path);
+            helper.insert(user);
+
         }
         helper.close();
     }
