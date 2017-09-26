@@ -33,7 +33,6 @@ public class DetectActivity extends AppCompatActivity implements
     private CascadeClassifier mJavaDetector;
     private float mRelativeFaceSize = 0.2f;
     private int mAbsoluteFaceSize = 0;
-
     private CameraBridgeViewBase mOpenCvCameraView;
 
     static {
