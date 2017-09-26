@@ -12,6 +12,7 @@ import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -121,6 +122,11 @@ public class DetectActivity extends AppCompatActivity implements
         // 翻转矩阵以适应前置摄像头
         Core.flip(mRgba, mRgba, 1);
         Core.flip(mGray, mGray, 1);
+        // 控制检测矩阵区域和大小
+        Rect rect = new Rect(
+                new Point(mGray.width() / 2 - 300, mGray.height() / 2 - 300),
+                new Size(600, 600));
+        mGray = new Mat(mGray, rect);
 
         if (mAbsoluteFaceSize == 0) {
             int height = mGray.rows();
@@ -134,9 +140,14 @@ public class DetectActivity extends AppCompatActivity implements
                     new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         }
         Rect[] facesArray = faces.toArray();
-        for (int i = 0; i < facesArray.length; i++)
-            Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(),
-                    FACE_RECT_COLOR, 3);
+        for (int i = 0; i < facesArray.length; i++) {
+            Point point = new Point(facesArray[i].x + 420, facesArray[i].y + 220);
+            facesArray[i] = new Rect(point, facesArray[i].size());
+            if (facesArray[i].height > 400 && facesArray[i].height < 500) {
+                Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(),
+                        FACE_RECT_COLOR, 3);
+            }
+        }
         return mRgba;
     }
 }
